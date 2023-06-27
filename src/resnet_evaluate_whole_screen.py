@@ -14,18 +14,18 @@ import os
 
 
 parser = argparse.ArgumentParser(description='Evaluate Screens, cell cycle and localization models')
-parser.add_argument("-loc_cpkt", action="store", dest="loc_cpkt", help="Path to model/checkpoint for localization network to use")
-parser.add_argument("-cyc_cpkt", action="store", dest="cyc_cpkt", help="Path to model/checkpoint for cell cycle network to use")
-parser.add_argument("-screen", action="store", dest="screens2analyze", help="Screen/s to analyze", nargs="+")
-parser.add_argument("-outpath", action="store", dest="outpath", help="Where to store output csv files")
-parser.add_argument("-noncropped", action="store_true", dest="use_non_cropped", help="Use non cropped cells")
+parser.add_argument("-l", "--LOC_CPKT", help="Path to model/checkpoint for localization network to use")
+parser.add_argument("-c", "--CYC_CPKT", help="Path to model/checkpoint for cell cycle network to use")
+parser.add_argument("-s", "--SCREENSTOANALYZE", help="Screen/s to analyze", nargs="+")
+parser.add_argument("-o", "--OUTPATH", help="Where to store output csv files")
+parser.add_argument("-n", action="store_true", dest="USE_NON_CROPPED", help="Use non cropped cells")
 args = parser.parse_args()
 
-locNetCpkt = args.loc_cpkt
-cycNetCpkt = args.cyc_cpkt
-outputPath = args.outpath
-screens = args.screens2analyze
-use_non_cropped = args.use_non_cropped
+locNetCpkt = args.LOC_CPKT
+cycNetCpkt = args.CYC_CPKT
+outputPath = args.OUTPATH
+screens = args.SCREENSTOANALYZE
+use_non_cropped = args.USE_NON_CROPPED
 
 
 def proccessCropsLoc(processedBatch,predicted_y,inputs,is_training,sess,keep_prob):
