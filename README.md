@@ -1,4 +1,4 @@
-# CellCycleNet
+# CellCycleNET
 
 
 
@@ -6,7 +6,7 @@
 
 Clone the repository
 ```
-$ git clone https://github.com/BooneAndrewsLab/CellCycleNet.git
+$ git clone https://github.com/BooneAndrewsLab/CellCycleNET.git
 $ cd CellCycleNet
 ```
 
