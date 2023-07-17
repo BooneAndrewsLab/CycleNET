@@ -19,9 +19,13 @@ def main():
     parser.add_argument("-i", "--input_folder", help="Path to input folder containing images to be segmented")
     parser.add_argument("-o", "--output_folder", help="Path to output folder where to save labeled images")
     parser.add_argument("-s", "--scripts_folder", help="Path where the scripts are saved")
-    parser.add_argument("-g", "--gfp_channel", help="Channel where the GFP (Green Fluorescent Protein) marker is. Example: ch1")
-    parser.add_argument("-n", "--nuclear_channel", help="Channel to be used in segmentation - usually where the nuclear and/or septin markers are. Example: ch2")
-    parser.add_argument("-c", "--cyto_channel", help="Channel where the cytoplasmic marker is. Example: ch3")
+    parser.add_argument("-g", "--gfp_channel", default="ch1",
+                        help="Channel where the GFP (Green Fluorescent Protein) marker is. Default is: ch1")
+    parser.add_argument("-n", "--nuclear_channel", default="ch2",
+                        help="Channel to be used in segmentation - usually where the nuclear and/or septin "
+                             "markers are. Default is: ch2")
+    parser.add_argument("-c", "--cyto_channel", default="ch3",
+                        help="Channel where the cytoplasmic marker is. Default is: ch3")
     args = parser.parse_args()
     
     indir = args.input_folder
@@ -40,7 +44,7 @@ def main():
     for filename in files:
         filepath = os.path.join(indir, filename)
         outpath = os.path.join(outdir, "%s_labeled.tiff" % filename.split('-')[0])
-        outpath_imm = outpath.replace("labeled", "imm")
+        outpath_imm = outpath.replace("labeled.tiff", "imm.tiff")
         if os.path.isfile(outpath) and os.path.isfile(outpath_imm):
           print("Already processed %s" % filename)
           continue
@@ -55,6 +59,7 @@ def main():
         try:
           I_MM, I_MM_Sep = NSMM.I_MM_BEN(image_farred, image_red)
           LabelIm = Watershed_MRF(image_farred, I_MM)
+
           
           Sep_Lab, Sep_num = nd.measurements.label(I_MM_Sep == 1)
           Changed_cells = np.array([], dtype=np.uint8)
