@@ -23,7 +23,11 @@ Download: Cell Cycle and Localization networks: [cellcyclenet_models.tar.gz][cel
 
 #### Single Cell Segmentation
 ```
+Usage: 
 $ python src/segmentation.py -i <INPUT_FOLDER> -o <OUTPUT_FOLDER> -s <SCRIPTS_FOLDER> -g <GFP_CHANNEL> -n <NUCLEAR_CHANNEL> -c <CYTO_CHANNEL>
+
+Example:
+$ python src/segmentation.py -i example/input_images -o example/labeled_images -s ./src -g ch1 -n ch2 -c ch3
 ```
 
 Script parameters:
@@ -38,9 +42,22 @@ Script parameters:
 
 _This script calls src/**NSMM**.py and src/**Watershed_MRF**.py_
 
+#### Compile single cell crops and coordinates
+```
+Usage: 
+$ python src/compile_single_cells.py -l <LABELED_FOLDER> -i <IMAGE_FOLDER> -s <CROP_SIZE> -g <GFP_CHANNEL> -n <NUCLEAR_CHANNEL> -c <CYTO_CHANNEL>
+
+Example:
+$ python src/compile_single_cells.py -l example/labeled_images -i example/input_images -s 64 -g ch1 -n ch2 -c ch3
+```
+
 #### Cell Cycle and Localization Prediction
 ```
+Usage:
 $ python resnet_evaluate_whole_screen.py -l <LOC_CPKT> -c <CYC_CPKT> -s <SCREENSTOANALYZE> -o <OUTPATH> -n
+
+Example:
+$ python resnet_evaluate_whole_screen.py 
 ```
 
 Script parameters:
