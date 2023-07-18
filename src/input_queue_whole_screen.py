@@ -26,13 +26,7 @@ class ScreenQueue:
         a queue full of data.
     """
 
-    def __init__(self,screen,use_non_cropped=False):
-
-        self.use_non_cropped = use_non_cropped
-        self.screen_num = screen[-1]
-        #self.plate_names = ['R'+self.screen_num+'_Plate_'+str(i).zfill(2) for i in range(13)]
-
-
+    def __init__(self, screen):
         self.localizationTerms = ['Actin', 'Bud', 'Bud Neck', 'Bud Periphery', 'Bud Site',
                                    'Cell Periphery', 'Cytoplasm', 'Cytoplasmic Foci', 'Eisosomes',
                                    'Endoplasmic Reticulum', 'Endosome', 'Golgi', 'Lipid Particles',
@@ -55,7 +49,7 @@ class ScreenQueue:
                        'gfpMedian_cyt']
                        
         #self.basePath = '/home/morphology/mpg4/OrenKraus/Segmentation_Output/Ben_Screens/' + screen + '/'
-        self.basePath = '/home/morphology/mpg6/alitsios/segmentation_labels/' + screen + '/'
+        self.basePath = screen + '/'
 
         #self.wells = np.unique([seq[:-2] for seq in GFP_images])
 
@@ -150,6 +144,7 @@ class ScreenQueue:
         wells = input_wells or self.wells
         threads = []
         n = len(wells) / n_threads
+        print('wells & n', wells, n)
         well_chunks = [wells[i:i + n] for i in xrange(0, len(wells), n)]
         for i in range(n_threads):
             t = threading.Thread(target=self.thread_main, args=(sess, coord, well_chunks[i]))
@@ -181,15 +176,6 @@ class ScreenQueue:
         #non_cropped_npy = np.float64(np.load(self.basePath+'CellData_non_cropped_fullcell/'+well))
         coord_npy = np.load(os.path.join(self.basePath, well.replace('.npy', '_coords.npy')))
         wellNames = [well[:12]]*len(coord_npy)
-
-
-        # generate Cyc and loc batch -> changed for Thanasis
-        #cycImageData = np.hstack((getSpecificChannels(cropped_npy,[FAR_RED_CHAN,RED_CHAN]),
-        #                          getSpecificChannels(non_cropped_npy,[RED_CHAN])))
-        #if self.use_non_cropped:
-        #    locImageData = getSpecificChannels(non_cropped_npy,[FAR_RED_CHAN,GFP_CHAN,RED_CHAN])
-        #else:
-        #    locImageData = getSpecificChannels(cropped_npy,[FAR_RED_CHAN,GFP_CHAN,RED_CHAN])
 
         cycImageData = getSpecificChannels(cropped_npy, [FAR_RED_CHAN, RED_CHAN, RED_CHAN])
         locImageData = getSpecificChannels(cropped_npy, [FAR_RED_CHAN, GFP_CHAN, RED_CHAN])

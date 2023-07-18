@@ -16,16 +16,16 @@ import os
 parser = argparse.ArgumentParser(description='Evaluate Screens, cell cycle and localization models')
 parser.add_argument("-l", "--LOC_CPKT", help="Path to model/checkpoint for localization network to use")
 parser.add_argument("-c", "--CYC_CPKT", help="Path to model/checkpoint for cell cycle network to use")
-parser.add_argument("-s", "--SCREENSTOANALYZE", help="Screen/s to analyze", nargs="+")
+parser.add_argument("-i", "--INPATH", help="Path to input folder containing labeled images")
 parser.add_argument("-o", "--OUTPATH", help="Where to store output csv files")
-parser.add_argument("-n", action="store_true", dest="USE_NON_CROPPED", help="Use non cropped cells")
+# parser.add_argument("-n", action="store_true", dest="USE_NON_CROPPED", help="Use non cropped cells")
 args = parser.parse_args()
 
 locNetCpkt = args.LOC_CPKT
 cycNetCpkt = args.CYC_CPKT
 outputPath = args.OUTPATH
-screens = args.SCREENSTOANALYZE
-use_non_cropped = args.USE_NON_CROPPED
+screens = [args.INPATH]
+# use_non_cropped = args.USE_NON_CROPPED
 
 
 def proccessCropsLoc(processedBatch,predicted_y,inputs,is_training,sess,keep_prob):
@@ -113,13 +113,11 @@ def eval():
     MAX_CELLS_PER_SCREEN = 5000000
 
     for screen in screens:
-
+        print("screen", screen)
         # start queue runner
         with tf.device("/cpu:0"):
-            queue_runner = ScreenQueue(screen,use_non_cropped)
+            queue_runner = ScreenQueue(screen)
             data_image_loc,data_image_cyc, data_coord, data_intense, well_frame = queue_runner.get_inputs(dequeueSize)
-
-
 
         sess.run(tf.global_variables_initializer())
 
@@ -195,21 +193,16 @@ def eval():
         allWellNames = np.hstack(wellNamesAll)
         rows = []
         cols = []
-        plateDigits = []
         wellIDs = []
         frames =[]
         for well in allWellNames:
-            #plateName,wellName=str.split(well,'/')
-            #plateDigits.append(str.split(plateName,'_')[-1])
             wellName = well
             rows.append(int(wellName[1:3]))
             cols.append(int(wellName[4:6]))
             wellIDs.append(wellName[:6])
             frames.append(int(wellName[7:9]))
         allPred['wellPath'] = allWellNames
-        #allPred['plate_well'] = np.hstack([str(plateDigits[i])+'_'+wellIDs[i] for i in range(len(wellIDs))])
         allPred['wellId'] = np.hstack(wellIDs)
-        #allPred['plate'] = np.hstack(plateDigits)
         allPred['row'] = np.hstack(rows)
         allPred['col'] = np.hstack(cols)
         allPred['frame'] = np.hstack(frames)
@@ -225,7 +218,8 @@ def eval():
         cycCpktBasename = os.path.basename(cycNetCpkt)
         if not os.path.exists(outputPath):
             os.makedirs(outputPath)
-        allPred.to_csv(outputPath+'/'+screen+'_'+locCpktBasename+'_'+cycCpktBasename+'_cyc_loc_pred_v1.csv')
+        allPred.to_csv(os.path.join(outputPath, '%s_%s_cyc_loc_pred_v1.csv' % (locCpktBasename, cycCpktBasename)),
+                       index=False)
 
         queue_runner.stopQueue(threads, coord, sess)
 

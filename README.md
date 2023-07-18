@@ -7,7 +7,7 @@
 Clone the repository
 ```
 $ git clone https://github.com/BooneAndrewsLab/CellCycleNET.git
-$ cd CellCycleNet
+$ cd CellCycleNET
 ```
 
 Create a virtual environment and install requirements
@@ -16,8 +16,6 @@ $ virtualenv --python=python2.7 venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
-
-Download: Cell Cycle and Localization networks: [cellcyclenet_models.tar.gz][cellcyclenet_models.tar.gz]
 
 ### Pipeline: Single Cell Segmentation + Cell Cycle and Localization Prediction
 
@@ -52,21 +50,29 @@ $ python src/compile_single_cells.py -l example/labeled_images -i example/input_
 ```
 
 #### Cell Cycle and Localization Prediction
+
+Download and save [Cell Cycle and Localization networks][cellcyclenet_models.tar.gz] to 'models' folder
+```
+$ mkdir models
+$ wget -P models https://thecellvision.org/cellcycleomics/network_models/cellcyclenet_models.tar.gz
+$ tar -xvzf models/cellcyclenet_models.tar.gz --directory=models
+```
+
+Run evaluation and prediction script 
 ```
 Usage:
-$ python resnet_evaluate_whole_screen.py -l <LOC_CPKT> -c <CYC_CPKT> -s <SCREENSTOANALYZE> -o <OUTPATH> -n
+$ python src/resnet_evaluate_whole_screen.py -l <LOC_CPKT> -c <CYC_CPKT> -i <INPUT_PATH> -o <OUTPATH> -n
 
 Example:
-$ python resnet_evaluate_whole_screen.py 
+$ python src/resnet_evaluate_whole_screen.py -l models/localization/inference_leo_model.ckpt-6500 -c models/cellcycle/inference_oren_model.ckpt-9500 -i example/labeled_images -o example/predictions
 ```
 
 Script parameters:
 ```
   -l LOC_CPKT           Path to model/checkpoint for localization network
   -c CYC_CPKT           Path to model/checkpoint for cell cycle network
-  -s SCREENSTOANALYZE   Screen/s to analyze
+  -s INPATH             Path to input folder containing labeled images
   -o OUTPATH            Where to store output csv files
-  -n                    Boolean: store True if specified. Use non cropped cells
 ```
 _This script calls src/**preprocess_images**.py and src/**input_queue_whole_screen**.py_
 
