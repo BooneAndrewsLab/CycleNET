@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Author: Oren Kraus (https://github.com/okraus, July 2013)
 Edited by: Myra Paz Masinas (Andrews and Boone Lab, July 2023)
@@ -7,15 +6,6 @@ Edited by: Myra Paz Masinas (Andrews and Boone Lab, July 2023)
 import scipy.ndimage as nd
 import numpy as np
 import mahotas
-#import matplotlib.pyplot as plt
-#import pymorph.mmorph as mm
-#import pymorph
-#import scipy
-#import copy
-#import pdb 
-
-#import sys
-#sys.path.append("/Users/orenkraus/PythonFiles")
 
 
 def Watershed_MRF(Iin,I_MM):
@@ -28,13 +18,7 @@ def Watershed_MRF(Iin,I_MM):
     too_small_Sds = np.where(SdsSizes < 30)
     SdsLab = mahotas.labeled.remove_regions(SdsLab, too_small_Sds)
     Sds=SdsLab>0
-    #pdb.set_trace()
-    '''
-    plt.figure(1)
-    plt.imshow(Sds,'gray',vmin=0,vmax=1)
-    plt.axis('off')
-    '''
-    
+
     #Sds=nd.morphology.binary_opening(Sds,structure=np.ones((10,10))).astype(np.int)    
     #Sds=nd.morphology.binary_propagation(Sds,structure=np.ones((10,10))).astype(np.int)
     
@@ -56,12 +40,6 @@ def Watershed_MRF(Iin,I_MM):
     Fgm=nd.binary_erosion(Fgm,structure=se3)
         
     Fgm_Lab,Fgm_num=nd.measurements.label(Fgm)    
-    
-    '''
-    plt.figure(2)  
-    plt.imshow(Fgm,'gray',vmin=0,vmax=1)
-    plt.axis('off')    
-    '''
     
     Nuc_Loc_1d=np.where(np.ravel(Sds==1))[0]
     for Lab in range(Fgm_num):
@@ -85,61 +63,5 @@ def Watershed_MRF(Iin,I_MM):
         cell_Loc_1d=np.where(np.ravel(LabWater==Lab))[0]
         if  bool((np.intersect1d(cell_Loc_1d,back_loc_1d)).any()):
             LabWater[LabWater==Lab]=1   
-    
-    '''  
-    plt.figure(3)  
-    plt.imshow(Im_ad,'gray',vmin=0,vmax=Im_ad.max())
-    plt.axis('off')     
-    
-    plt.figure(4)  
-    plt.imshow(Im_ad,'gray',vmin=0,vmax=Im_ad2.max())
-    plt.axis('off')    
-    
-    plt.figure(5)  
-    plt.imshow(LabWater,'gray')
-    plt.axis('off') 
-    
-    plt.show()
-    #pdb.set_trace()
-     
-    Sds=bwareaopen(Sds,30);   ------ mm.areaopen(Sds,30)
-    
-    se2=strel('square',3);
-    
-    NucBound=bwperim(Sds,8);
-    NucBound=imdilate(NucBound,se2);
-    Fgm=Fgm+NucBound;
-    
-    Fgm=bwareaopen(Fgm,30);
-    
-    se3=strel('disk',1);
-    Fgm=imerode(Fgm,se3);
-    
-    Fgm_L=bwlabel(Fgm);
-    for obj=1:max(max(Fgm_L))
-        if ~sum(intersect(find(Fgm_L==obj),find(Sds==1))), Fgm(Fgm_L==obj)=0;
-        end  
-    end
-    
-    Iorig=Iin;
-    
-    Im_ad=imadjust(Iorig,[0 double(max(Iorig(:)))./(2^16)],[]); % adjust contrast (stretch to min/max intensity)
-    
-    h1=fspecial('gaussian',3);
-    Im_ad=imfilter(Im_ad,h1);
-    
-    I_ad_c=imcomplement(Im_ad);
-    I_mod=imimposemin(I_ad_c,~Fgm | Sds);
-    
-    L=watershed(I_mod);
-
-
-    for obj=2:max(max(L))
-        if ~sum(intersect(find(L==obj),find(Sds==1))), L(L==obj)=1;
-        end
-    end
-    
-    '''
-    
     
     return LabWater

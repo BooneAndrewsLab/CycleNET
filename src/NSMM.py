@@ -1,7 +1,6 @@
 """
 Author: Oren Kraus (https://github.com/okraus, September 2013)
 Edited by: Myra Paz Masinas (Andrews and Boone Lab, July 2023)
-
 """
 
 import numpy as np
@@ -10,8 +9,6 @@ from copy import deepcopy
 from scipy import ndimage
 from sympy import nsolve, symbols, functions
 from sympy.functions.special.gamma_functions import digamma
-import matplotlib.pyplot as plt
-import pdb
 import scipy.ndimage as nd
 import mahotas
 DEBUG = False
@@ -52,7 +49,6 @@ def I_MM_BEN(arrayFarRed,arrayRed):
 
     I_MM_3,Ptotal=Run_MM(arrayRed,K_3,Nh_3,Kj_3,Ui_3,Si_3,Vi_3,Wi_3)
 
-        
     #se2=nd.generate_binary_structure(2,15).astype(np.int)
     #pdb.set_trace()
     
@@ -96,27 +92,7 @@ def I_MM_BEN(arrayFarRed,arrayRed):
     # label number of cyt regions
     # count number of nucs and septins in each cyt region
     # replace nucs with septins as seeds
-    '''
-    Fgm=np.uint8(I_MM_1==1)
-    Fgm_Lab,Fgm_num=nd.measurements.label(Fgm)
-    Nuc_Loc_1d=np.where(np.ravel(Nuc==1))[0]
-    for Lab in range(Fgm_num):
-        Fgm_Loc_1d=np.where(np.ravel(Fgm_Lab==Lab))[0]
-    
-        overlap_nucs=np.zeros(np.shape(I_MM_1))
-        overlap_nucs=np.ravel(overlap_nucs)
-        overlap_nucs[(np.intersect1d(Fgm_Loc_1d,Nuc_Loc_1d))]=1
-        overlap_nucs=np.reshape(overlap_nucs,np.shape(I_MM_1))
-        overlap_nuc_lab,overlap_nuc_num = nd.measurements.label(overlap_nucs)
-        
-        if overlap_nuc_num==0:
-            Fgm[Fgm_Lab==Lab]=0
-        elsif overlap_nuc_num>2:
-            Nuc[overlap_nucs==1]=0
-            Fgm[Fgm_Lab==Lab]=0
-            
-    '''
-    
+
     return I_MM, np.uint8(I_MM_Sep)    
 
 
@@ -157,22 +133,7 @@ def Run_MM(Iorig, K, Nh, Kj, Ui, Si, V_i, Wi):
     
     #NucArea=nucNum*meanNucSize/(M*N)
     #CytArea=nucNum*meanCellSize/(M*N)
-    '''    
-    CytArea=I_ad1.sum()    
-    BackArea=1-CytArea
-
-    if BackArea<0.1:
-        BackArea=0.1
-        CytArea=1-BackArea
-    if CytArea<0.1:
-        CytArea=0.2
-        BackArea=1-CytArea
-        
-    Wi=[ BackArea, CytArea]
-    
-    print Wi
-    '''
-    ##################################################   
+    ##################################################
 
     #####       Initialize Parameters         #########
     MP=np.ones((M,N,K))     # mixing proportions per pixel

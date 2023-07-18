@@ -1,6 +1,6 @@
 """
 Author: Oren Kraus (https://github.com/okraus, 2013)
-
+Edited by: Myra Paz Masinas (Andrews and Boone Lab, July 2023)
 """
 
 import preprocess_images as procIm
@@ -9,11 +9,6 @@ import numpy as np
 import threading
 import glob
 import os
-
-#import sys
-#sys.path.insert(0,'../cell_resnet/')
-#sys.path.append('/home/ccbr_okraus/cell_learning')
-#sys.path.append('/home/ccbr_okraus/cell_segmentation/Segmentation_library/')
 
 
 def getSpecificChannels(flatImageData,channels,imageSize=64):
@@ -33,12 +28,6 @@ class ScreenQueue:
                                    'Mitochondria', 'None', 'Nuclear Periphery', 'Nucleolus', 'Nucleus',
                                    'Peroxisomes', 'Punctate Nuclear', 'Vacuole', 'Vacuole Periphery']
 
-        # self.col_names_output = ['frame', 'x_loc', 'y_loc', 'cells_Intensity_IntegratedIntensity_GFP',
-        #                          'cells_Intensity_MeanIntensity_GFP', 'cells_Intensity_StdIntensity_GFP',
-        #                          'cells_Intensity_MinIntensity_GFP',
-        #                          'cells_Intensity_MaxIntensity_GFP'] + self.localizationTerms
-
-
         self.data_intense_names = ['cellSize','nucSize',
                        'gfpIntegrated_cell','gfpIntegrated_nuc','gfpIngtegrated_cyt',
                        'gfpMean_cell','gfpMean_nuc','gfpMean_cyt',
@@ -48,7 +37,6 @@ class ScreenQueue:
                        'gfpMedian_cell','gfpMedian_nuc',
                        'gfpMedian_cyt']
                        
-        #self.basePath = '/home/morphology/mpg4/OrenKraus/Segmentation_Output/Ben_Screens/' + screen + '/'
         self.basePath = screen + '/'
 
         #self.wells = np.unique([seq[:-2] for seq in GFP_images])

@@ -1,6 +1,5 @@
 """
 Author: Oren Kraus (https://github.com/okraus, 2013)
-
 """
 
 import numpy as np

@@ -1,6 +1,6 @@
 """
 Author: Oren Kraus (https://github.com/okraus, 2013)
-
+Edited by: Myra Paz Masinas (Andrews and Boone Lab, July 2023)
 """
 
 from input_queue_whole_screen import ScreenQueue
@@ -18,14 +18,12 @@ parser.add_argument("-l", "--LOC_CPKT", help="Path to model/checkpoint for local
 parser.add_argument("-c", "--CYC_CPKT", help="Path to model/checkpoint for cell cycle network to use")
 parser.add_argument("-i", "--INPATH", help="Path to input folder containing labeled images")
 parser.add_argument("-o", "--OUTPATH", help="Where to store output csv files")
-# parser.add_argument("-n", action="store_true", dest="USE_NON_CROPPED", help="Use non cropped cells")
 args = parser.parse_args()
 
 locNetCpkt = args.LOC_CPKT
 cycNetCpkt = args.CYC_CPKT
 outputPath = args.OUTPATH
 screens = [args.INPATH]
-# use_non_cropped = args.USE_NON_CROPPED
 
 
 def proccessCropsLoc(processedBatch,predicted_y,inputs,is_training,sess,keep_prob):
@@ -234,4 +232,3 @@ def main(_):
 
 if __name__ == '__main__':
     tf.app.run()
-
