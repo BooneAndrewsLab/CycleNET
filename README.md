@@ -1,4 +1,4 @@
-# CellCycleNET
+# CycleNET
 
 
 
@@ -6,8 +6,8 @@
 
 Clone the repository
 ```
-$ git clone https://github.com/BooneAndrewsLab/CellCycleNET.git
-$ cd CellCycleNET
+$ git clone https://github.com/BooneAndrewsLab/CycleNET.git
+$ cd CycleNET
 ```
 
 Download [Cell Cycle and Localization networks][cellcyclenet_models] to 'models' folder
