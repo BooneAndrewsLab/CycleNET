@@ -70,7 +70,7 @@ Example:
 $ python src/segmentation.py -i example/input_images -o example/labeled_images -s ./src -g ch1 -n ch2 -c ch3
 ```
 
-###### Script parameters:
+Script parameters:
 ```
   -i INPUT_FOLDER       Path to input folder containing images to be segmented
   -o OUTPUT_FOLDER      Path to output folder where to save labeled images
@@ -80,7 +80,7 @@ $ python src/segmentation.py -i example/input_images -o example/labeled_images -
   -c CYTO_CHANNEL       Channel where the cytoplasmic marker is. Example: ch3
 ```
 
-######  _* This script calls src/**NSMM**.py and src/**Watershed_MRF**.py_
+_This script calls src/**NSMM**.py and src/**Watershed_MRF**.py_
 
 
 #### STEP 2 - COMPILE SINGLE CELL CROPS AND COORDINATES
@@ -102,14 +102,14 @@ Example:
 $ python src/evaluation_script_localization_cellcycle.py -l models/localization/localization.ckpt-6500 -c models/cellcycle/cell_cycle.ckpt-9500 -i example/labeled_images -o example/predictions
 ```
 
-###### Script parameters:
+Script parameters:
 ```
   -l LOC_CPKT           Path to model/checkpoint for localization network
   -c CYC_CPKT           Path to model/checkpoint for cell cycle network
   -s INPATH             Path to input folder containing labeled images
   -o OUTPATH            Where to store output csv files
 ```
-###### _* This script calls src/**preprocess_images**.py and src/**input_queue_whole_screen**.py_
+_This script calls src/**preprocess_images**.py and src/**input_queue_whole_screen**.py_
 
 ### Prerequisites
 Python 2.7 https://www.python.org/downloads
