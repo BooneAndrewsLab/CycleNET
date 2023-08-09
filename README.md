@@ -44,7 +44,7 @@ $ python src/training_script_cellcycle.py -i <INFERENCE_FUNCTION> -l <MODEL_OUTP
 
 Example:
 $ mkdir model_training_cellcycle
-$ python src/training_script_cellcycle.py -i inference_leo -l model_training_cellcycle -t datasets/cellcycle_train_set.hdf5 -v datasets/cellcycle_test_set.hdf5
+$ python src/training_script_cellcycle.py -i inference_oren -l model_training_cellcycle -t datasets/cellcycle_train_set.hdf5 -v datasets/cellcycle_test_set.hdf5
 ```
 
 #### LOCALIZATION
