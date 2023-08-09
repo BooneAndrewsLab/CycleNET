@@ -130,7 +130,8 @@ def loss(predicted_y,labeled_y):
 
 def loss_logits(logits,labeled_y,baseName):
     with tf.name_scope('cross_entropy'):
-        logistic_losses = tf.nn.softmax_cross_entropy_with_logits(logits, labeled_y, name='sigmoid_cross_entropy')
+        logistic_losses = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labeled_y,
+                                                                  name='sigmoid_cross_entropy')
         cross_entropy = tf.reduce_mean(logistic_losses)
         tf.summary.scalar(baseName+'_cross entropy', cross_entropy)
 
@@ -184,18 +185,6 @@ def train(inference_function):
     learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
                                                decay_step, decay_rate, staircase=True)
     tf.summary.scalar('learning_rate', learning_rate)
-
-    ######################
-    # DATASET PARAMETERS #
-    ######################
-    #trainHdf5 = '../datasets/train_set.hdf5'
-    #validHdf5 = '../datasets/valid_set.hdf5'
-    #trainHdf5 = '../datasets/ben_labeled_set/train_set.hdf5'
-    #validHdf5 = '../datasets/ben_labeled_set/test_set.hdf5'
-    # trainHdf5 = '../datasets/ben_labeled_set/train_v2_set.hdf5'
-    # validHdf5 = '../datasets/ben_labeled_set/test_v2_set.hdf5'
-#     trainHdf5 = '/home/morphology/mpg4/OrenKraus/Data_Sets/Ben_Localization/\
-# ben_data_balanced_with_none_class_sub_sample_50_rand.hdf5'
 
     cropSize = 60
     batchSize = 128
@@ -289,7 +278,7 @@ def train(inference_function):
                                                       input: processedBatch,
                                                       labels: batch['Index']})
             train_writer.add_summary(summary, i)
-            print('Train cccuracy at step %s: %s ' % (i, acc))
+            print('Train accuracy at step %s: %s ' % (i, acc))
 
         if i % SAVE_INTERVAL == 0:
             checkpoint_path = os.path.join(checkpoint_dir, inference_func_2use+'_model.ckpt')

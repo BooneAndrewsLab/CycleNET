@@ -26,15 +26,19 @@ NUM_CHANNELS = 3
 CHANNELS2USE=[0,2,4]
 
 import argparse
-parser = argparse.ArgumentParser(description='Train TF model on yolanda data')
-parser.add_argument("-inference_function",action="store",dest="inf_func",help="inference function for model [inference_resnet,inference_leo,inference_oren]")
-parser.add_argument("-logdir",action="store",dest="logdir",help="directory to store results")
+parser = argparse.ArgumentParser(description='Train cell cycle model')
+parser.add_argument("-i", "--inf_func", help="Inference function for model."
+                                                       "Options are: inference_resnet, inference_leo, inference_oren")
+parser.add_argument("-l", "--logdir", help="Directory where to store results")
+parser.add_argument("-t", "--train_set", help="Path to training set file")
+parser.add_argument("-v", "--valid_set", help="Path to validation set file")
 args = parser.parse_args()
-print args.inf_func,args.logdir
 
 
 checkpoint_dir = args.logdir
 inference_func_2use = args.inf_func
+trainHdf5 = args.train_set
+validHdf5 = args.valid_set
 
 def inference_resnet(input_images,is_training):
     ##############################
@@ -118,15 +122,16 @@ def loss(predicted_y,labeled_y):
         diff = labeled_y * tf.log(tf.clip_by_value(predicted_y,1e-16,1.0))
         with tf.name_scope('total'):
             cross_entropy = -tf.reduce_mean(diff)
-        tf.scalar_summary('cross entropy', cross_entropy)
+        tf.summary.scalar('cross entropy', cross_entropy)
 
     return cross_entropy
 
 def loss_logits(logits,labeled_y,baseName):
     with tf.name_scope('cross_entropy'):
-        logistic_losses = tf.nn.softmax_cross_entropy_with_logits(logits, labeled_y, name='sigmoid_cross_entropy')
+        logistic_losses = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labeled_y,
+                                                                  name='sigmoid_cross_entropy')
         cross_entropy = tf.reduce_mean(logistic_losses)
-        tf.scalar_summary(baseName+'_cross entropy', cross_entropy)
+        tf.summary.scalar(baseName+'_cross entropy', cross_entropy)
 
     return cross_entropy
 
@@ -149,7 +154,7 @@ def accuracy(predicted_y,labeled_y,baseName):
             correct_prediction = tf.equal(tf.argmax(predicted_y, 1), tf.argmax(labeled_y, 1))
         with tf.name_scope('accuracy'):
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-        tf.scalar_summary(baseName+'_accuracy', accuracy)
+        tf.summary.scalar(baseName+'_accuracy', accuracy)
 
     return accuracy
 
@@ -177,21 +182,7 @@ def train(inference_function):
     decay_rate = 0.98
     learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
                                                decay_step, decay_rate, staircase=True)
-    tf.scalar_summary('learning_rate', learning_rate)
-
-    ######################
-    # DATASET PARAMETERS #
-    ######################
-    #trainHdf5 = '../datasets/train_set.hdf5'
-    #validHdf5 = '../datasets/valid_set.hdf5'
-    #trainHdf5 = '../datasets/ben_labeled_set/train_set.hdf5'
-    #validHdf5 = '../datasets/ben_labeled_set/test_set.hdf5'
-    #trainHdf5 = '../datasets/ben_labeled_set/train_v2_set.hdf5'
-    #validHdf5 = '../datasets/ben_labeled_set/test_v2_set.hdf5'
-    trainHdf5 = '../datasets/ben_cyc_data/ben_cyc_train.hdf5'
-    validHdf5 = '../datasets/ben_cyc_data/ben_cyc_test.hdf5'
-#     trainHdf5 = '/home/morphology/mpg4/OrenKraus/Data_Sets/Ben_Localization/\
-# ben_data_balanced_with_none_class_sub_sample_50_rand.hdf5'
+    tf.summary.scalar('learning_rate', learning_rate)
 
     cropSize = 60
     batchSize = 128
@@ -216,7 +207,7 @@ def train(inference_function):
 
     #training graph
     # with tf.name_scope('cross_entropy'):
-    #     cross_entropy = loss_logits(logits,labels)
+    #     cross_entropy = loss_logits(logits,labels)AttributeError: 'module' object has no attribute 'merge_all_summaries'
 
     #test graph
     with tf.name_scope('train'):
@@ -232,8 +223,8 @@ def train(inference_function):
     saver = tf.train.Saver(tf.all_variables(),max_to_keep=100)
 
     # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
-    merged = tf.merge_all_summaries()
-    train_writer = tf.train.SummaryWriter(checkpoint_dir + '/train',
+    merged = tf.summary.merge_all()
+    train_writer = tf.summary.FileWriter(checkpoint_dir + '/train',
                                           sess.graph)
 
     sess.run(tf.initialize_all_variables())
