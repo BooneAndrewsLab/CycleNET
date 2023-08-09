@@ -10,18 +10,18 @@ $ git clone https://github.com/BooneAndrewsLab/CellCycleNET.git
 $ cd CellCycleNET
 ```
 
-Download [Cell Cycle and Localization networks] [cellcyclenet_models] to 'models' folder
+Download [Cell Cycle and Localization networks][cellcyclenet_models] to 'models' folder
 ```
 $ mkdir models
-$ wget -P models https://thecellvision.org/cellcycleomics/network_models/cellcyclenet_models.tar.gz
+$ wget -P models https://thecellvision.org/cellcycleomics/cellcyclenet_models.tar.gz
 $ tar -xvzf models/cellcyclenet_models.tar.gz --directory=models
 ```
 
-Download [Cell Cycle] [cellcycle_training_dataset] and [Localization] [localization_training_dataset] training sets to 'datasets' folder
+Download [Cell Cycle][cellcycle_training_dataset] and [Localization][localization_training_dataset] training sets to 'datasets' folder
 ```
 $ mkdir datasets
-$ wget -P datasets https://thecellvision.org/cellcycleomics/datasets/cellcycle_training_dataset.tar.gz
-$ wget -P datasets https://thecellvision.org/cellcycleomics/datasets/localization_training_dataset.tar.gz
+$ wget -P datasets https://thecellvision.org/cellcycleomics/cellcycle_training_dataset.tar.gz
+$ wget -P datasets https://thecellvision.org/cellcycleomics/localization_training_dataset.tar.gz
 $ tar -xvzf datasets/cellcycle_training_dataset.tar.gz --directory=datasets
 $ tar -xvzf datasets/localization_training_dataset.tar.gz --directory=datasets
 ```
@@ -80,7 +80,8 @@ $ python src/segmentation.py -i example/input_images -o example/labeled_images -
   -c CYTO_CHANNEL       Channel where the cytoplasmic marker is. Example: ch3
 ```
 
-######  _This script calls src/**NSMM**.py and src/**Watershed_MRF**.py_
+######  _* This script calls src/**NSMM**.py and src/**Watershed_MRF**.py_
+
 
 #### STEP 2 - COMPILE SINGLE CELL CROPS AND COORDINATES
 ```
@@ -108,7 +109,7 @@ $ python src/evaluation_script_localization_cellcycle.py -l models/localization/
   -s INPATH             Path to input folder containing labeled images
   -o OUTPATH            Where to store output csv files
 ```
-###### _This script calls src/**preprocess_images**.py and src/**input_queue_whole_screen**.py_
+###### _* This script calls src/**preprocess_images**.py and src/**input_queue_whole_screen**.py_
 
 ### Prerequisites
 Python 2.7 https://www.python.org/downloads
@@ -117,7 +118,7 @@ Python 2.7 https://www.python.org/downloads
 This software is licensed under the [BSD 3-Clause License][BSD3]. Please see the 
 ``LICENSE`` file for more details.
 
-[cellcyclenet_models]: https://thecellvision.org/cellcycleomics/network_models/cellcyclenet_models.tar.gz
-[cellcycle_training_dataset]: https://thecellvision.org/cellcycleomics/datasets/cellcycle_training_dataset.tar.gz
-[localization_training_dataset]: https://thecellvision.org/cellcycleomics/datasets/localization_training_dataset.tar.gz
+[cellcyclenet_models]: https://thecellvision.org/cellcycleomics/cyclenet_models.tar.gz
+[cellcycle_training_dataset]: https://thecellvision.org/cellcycleomics/cellcycle_training_dataset.tar.gz
+[localization_training_dataset]: https://thecellvision.org/cellcycleomics/localization_training_dataset.tar.gz
 [BSD3]: https://opensource.org/license/bsd-3-clause
