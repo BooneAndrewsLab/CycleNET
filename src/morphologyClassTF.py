@@ -1,9 +1,8 @@
-####
-# identical to morphologyClass but for separate hdf5 sets for train, valid, test
-# for dataset in /home/okraus/MethodsPaper/datasets/yolanda_training_data/train|valid|test|_set.hdf5
-####
+"""
+Author: Oren Kraus (https://github.com/okraus, 2013)
+"""
+
 import h5py
-import math
 import numpy as np
 
 

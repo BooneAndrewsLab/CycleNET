@@ -1,39 +1,31 @@
-import tensorflow as tf
-import nn_layers
-#import input_queue_yolanda_2 # use single hdf5 dataset and stretch normalization
-import morphologyClassTF_2 as dataClass # NO QUEUE
-import preprocess_images as procIm # NO QUEUE
-import numpy as np
-import os
-#import pdb
+"""
+Author: Oren Kraus (https://github.com/okraus, 2013)
+Edited by: Myra Paz Masinas (Andrews and Boone Lab, 2023)
+"""
 
-# flags = tf.app.flags
-# FLAGS = flags.FLAGS
-# #flags.DEFINE_boolean('fake_data', False, 'If true, uses fake data '
-# #                     'for unit testing.')
-# flags.DEFINE_integer('max_steps', 500, 'Number of steps to run trainer.')
-# flags.DEFINE_float('learning_rate', 0.1, 'Initial learning rate.')
-# #flags.DEFINE_float('dropout', 0.9, 'Keep probability for training dropout.')
-# #flags.DEFINE_string('data_dir', '/tmp/data', 'Directory for storing data')
-#flags.DEFINE_string('train_dir', '/tmp/resnet_yolanda_train', 'Train directory')
+import morphologyClassTF as dataClass
+import preprocess_images as procIm
+import tensorflow as tf
+import numpy as np
+import nn_layers
+import argparse
+import os
 
 MAX_STEPS = 10000
 WORKERS = 6
 SAVE_INTERVAL = 500
 NUM_CLASSES = 9
 NUM_CHANNELS = 3
-#CHANNELS2USE = [4,5,6]
 CHANNELS2USE=[0,2,4]
 
-import argparse
+
 parser = argparse.ArgumentParser(description='Train cell cycle model')
-parser.add_argument("-i", "--inf_func", help="Inference function for model."
-                                                       "Options are: inference_resnet, inference_leo, inference_oren")
+parser.add_argument("-i", "--inf_func", help="Inference function for model. "
+                                             "Options are: inference_resnet, inference_leo, inference_oren")
 parser.add_argument("-l", "--logdir", help="Directory where to store results")
 parser.add_argument("-t", "--train_set", help="Path to training set file")
 parser.add_argument("-v", "--valid_set", help="Path to validation set file")
 args = parser.parse_args()
-
 
 checkpoint_dir = args.logdir
 inference_func_2use = args.inf_func
@@ -46,7 +38,6 @@ def inference_resnet(input_images,is_training):
     ##############################
 
     hidden1 = nn_layers.conv_layer(input_images, 7, 7, NUM_CHANNELS, 64, 2, 'conv_1',is_training=is_training)
-    # pool1 = pool3_layer(hidden1,'pool1')
     netVars = [hidden1]
     with tf.name_scope('bottleStack1'):
         netVars.append(nn_layers.bottleStack(netVars[-1], 3, 64, 64, 256, 'bottleStack1',is_training=is_training))
@@ -54,8 +45,6 @@ def inference_resnet(input_images,is_training):
         netVars.append(nn_layers.bottleStack(netVars[-1], 6, 256, 128, 512, 'bottleStack2',is_training=is_training))
     with tf.name_scope('bottleStack3'):
         netVars.append(nn_layers.bottleStack(netVars[-1], 3, 512, 256, 1024, 'bottleStack3',is_training=is_training))
-    #with tf.name_scope('bottleStack4'):
-    #    netVars.append(nn_layers.bottleStack(netVars[-1], 3, 1024, 512, 2048, 'bottleStack4',is_training=is_training))
     netVars.append(tf.reduce_mean(netVars[-1], reduction_indices=[1, 2], name="avg_pool"))
     fc_1 = nn_layers.nn_layer(netVars[-1], 1024, 1000, 'fc_1', act=tf.nn.relu, is_training=is_training)
     logit = nn_layers.nn_layer(fc_1, 1000, NUM_CLASSES, 'final_layer', act=None, is_training=is_training)
@@ -136,18 +125,6 @@ def loss_logits(logits,labeled_y,baseName):
     return cross_entropy
 
 
-
-# def accuracy(predicted_y,labeled_y):
-#     with tf.name_scope('accuracy'):
-#         with tf.name_scope('correct_prediction'):
-#             correct_prediction = tf.equal(tf.argmax(predicted_y, 1), tf.argmax(labeled_y, 1))
-#         with tf.name_scope('accuracy'):
-#             accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-#         tf.scalar_summary('accuracy', accuracy)
-#
-#     return accuracy
-
-
 def accuracy(predicted_y,labeled_y,baseName):
     with tf.name_scope('accuracy'):
         with tf.name_scope('correct_prediction'):
@@ -167,15 +144,9 @@ def processBenBatch(curBatch):
     return {'data':curImages,'Index':curLabels}
 
 def train(inference_function):
-
     print('\n\n',inference_function,'\n\n')
-    #initialize tf session
-    #sess = tf.Session(config=tf.ConfigProto(intra_op_parallelism_threads=WORKERS))
-    #coord = tf.train.Coordinator()
     sess = tf.Session()
-
     dequeueSize = 100
-
     global_step = tf.Variable(0, trainable=False)
     starter_learning_rate = 0.1
     decay_step = 25
@@ -205,17 +176,11 @@ def train(inference_function):
     logits = inference_function(input, is_training,keep_prob)
     predicted_y = tf.nn.softmax(logits, name='softmax')
 
-    #training graph
-    # with tf.name_scope('cross_entropy'):
-    #     cross_entropy = loss_logits(logits,labels)AttributeError: 'module' object has no attribute 'merge_all_summaries'
-
-    #test graph
+    # test graph
     with tf.name_scope('train'):
         train_acc = accuracy(predicted_y,labels,'train')
         cross_entropy = loss_logits(logits, labels,'train')
         train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy,global_step=global_step)
-    # with tf.name_scope('train'):
-    #     train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
     with tf.name_scope('test'):
         test_acc = accuracy(predicted_y,labels,'test')
         test_loss = loss_logits(logits, labels,'test')
@@ -230,7 +195,6 @@ def train(inference_function):
     sess.run(tf.initialize_all_variables())
 
     # training loop
-
     for i in range(MAX_STEPS):
         print('step ',i)
 
