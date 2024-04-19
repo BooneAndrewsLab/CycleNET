@@ -1,5 +1,5 @@
 # CycleNET
-
+[![DOI](https://zenodo.org/badge/658895858.svg)](https://zenodo.org/doi/10.5281/zenodo.10998620)
 
 
 ### Project Setup
