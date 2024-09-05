@@ -1,0 +1,16 @@
+name: cyclenet_env 
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python==3.6
+  - absl-py==1.1.0
+  - h5py==2.10.0
+  - pandas==0.24.2
+  - pip
+  - sympy==1.5.1
+  - tensorflow==1.6.0
+  - pip:
+    - mahotas==1.4.0
+    - pyparsing==2.4.7
+    - scikit-image==0.14.5

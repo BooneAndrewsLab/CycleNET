@@ -40,7 +40,7 @@ def main():
     import NSMM
     from Watershed_MRF import Watershed_MRF
 
-    files = sorted(filter(lambda x: gfp_channel in x, os.listdir(indir)))
+    files = sorted([x for x in os.listdir(indir) if gfp_channel in x])
     for filename in files:
         filepath = os.path.join(indir, filename)
         outpath = os.path.join(outdir, "%s_labeled.tiff" % filename.split('-')[0])
