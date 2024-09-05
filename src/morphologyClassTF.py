@@ -17,7 +17,8 @@ class Data:
         self.folder = folder
         self.h5data = h5py.File(self.folder, 'r')
         self.keys2fetch = keys2fetch
-        h5keys = self.h5data.keys()
+        h5keys = list(self.h5data.keys())
+
         self.groupedData = {}
         for key in keys2fetch: self.groupedData[key] = []
         for key in h5keys:
@@ -54,7 +55,7 @@ class Data:
 
         for key in self.keys2fetch:
             curInd = 0
-            curDset = startDsetNum
+            curDset = int(startDsetNum)
             curDsetInd = startDsetInd
             while curInd < self.batchSize:
                 dsetShape = self.h5data[key + str(curDset)].shape

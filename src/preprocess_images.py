@@ -71,6 +71,7 @@ def jitterBatch(batchData,cropSize,imSize):
     jitterPix = imSize-cropSize
     for i in range(batchSize):
         offset = np.random.randint(0,jitterPix,2)
+
         croppedBatch[i,:,:,:] = batchData[i,offset[0]:x-(jitterPix-offset[0]),
                                             offset[1]:y-(jitterPix-offset[1]),:]  
     return croppedBatch
@@ -81,11 +82,10 @@ def extractCrops(batchData,cropSize,imSize):
     croppedBatch = np.zeros((batchSize,crops,cropSize,cropSize,channels),dtype=batchData.dtype)
     jitterPix = imSize-cropSize
 
-
     for i in range(batchSize):
 
      #center crop
-        offset = [jitterPix/2,jitterPix/2]
+        offset = [jitterPix//2,jitterPix//2]
         croppedBatch[i,0,:,:,:] = batchData[i,offset[0]:x-(jitterPix-offset[0]),
                                             offset[1]:y-(jitterPix-offset[1]),:]
     #left top crop

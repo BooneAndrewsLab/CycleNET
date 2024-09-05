@@ -46,7 +46,7 @@ def main():
     se5 = np.array([[0, 0, 1, 0, 0], [0, 1, 1, 1, 0], [1, 1, 1, 1, 1], [0, 1, 1, 1, 0], [0, 0, 1, 0, 0]], dtype=int)
     se3 = nd.generate_binary_structure(2, 1)
 
-    labels = sorted(filter(lambda x: x.endswith('_labeled.tiff'), os.listdir(labeldir)))
+    labels = sorted([x for x in os.listdir(labeldir) if x.endswith('_labeled.tiff')])
     len_labels = len(labels)
 
     final_cellcnt = 0

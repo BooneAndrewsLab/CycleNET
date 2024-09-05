@@ -117,7 +117,7 @@ class ScreenQueue:
                                                          self.data_intense: data_intense,
                                                          self.data_well: well_frame})
                 else:
-                    print 'no cells:',well,coord_npy.shape
+                    print('no cells:',well,coord_npy.shape)
 
             except:
                 # Report exceptions to the coordinator.
@@ -131,9 +131,10 @@ class ScreenQueue:
 
         wells = input_wells or self.wells
         threads = []
-        n = len(wells) / n_threads
+        n = len(wells) // n_threads
         print('wells & n', wells, n)
-        well_chunks = [wells[i:i + n] for i in xrange(0, len(wells), n)]
+
+        well_chunks = [wells[i:i + n] for i in range(0, len(wells), n)]
         for i in range(n_threads):
             t = threading.Thread(target=self.thread_main, args=(sess, coord, well_chunks[i]))
             t.daemon = True # thread will close when parent quits

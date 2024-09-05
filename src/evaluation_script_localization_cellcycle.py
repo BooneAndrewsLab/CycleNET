@@ -62,10 +62,10 @@ def eval():
     locSession = tf.Session(graph=loc)
     loc_saver.restore(locSession, locNetCpkt)
 
-    pred_loc = loc.get_tensor_by_name(u'softmax:0')
-    input_loc = loc.get_tensor_by_name(u'input:0')
-    is_training_loc = loc.get_tensor_by_name(u'is_training:0')
-    keep_prob_loc = loc.get_tensor_by_name(u'Placeholder:0')
+    pred_loc = loc.get_tensor_by_name('softmax:0')
+    input_loc = loc.get_tensor_by_name('input:0')
+    is_training_loc = loc.get_tensor_by_name('is_training:0')
+    keep_prob_loc = loc.get_tensor_by_name('Placeholder:0')
 
     #CELL CYCLE
     cyc = tf.Graph()
@@ -74,10 +74,10 @@ def eval():
     cycSession = tf.Session(graph=cyc)
     cyc_saver.restore(cycSession, cycNetCpkt)
 
-    pred_cyc = cyc.get_tensor_by_name(u'softmax:0')
-    input_cyc = cyc.get_tensor_by_name(u'input:0')
-    is_training_cyc = cyc.get_tensor_by_name(u'is_training:0')
-    keep_prob_cyc = cyc.get_tensor_by_name(u'Placeholder:0')
+    pred_cyc = cyc.get_tensor_by_name('softmax:0')
+    input_cyc = cyc.get_tensor_by_name('input:0')
+    is_training_cyc = cyc.get_tensor_by_name('is_training:0')
+    keep_prob_cyc = cyc.get_tensor_by_name('Placeholder:0')
 
 
     ###################################################################################################################
