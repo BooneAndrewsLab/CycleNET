@@ -26,11 +26,10 @@ $ tar -xvzf datasets/cellcycle_training_dataset.tar.gz --directory=datasets
 $ tar -xvzf datasets/localization_training_dataset.tar.gz --directory=datasets
 ```
 
-Create a virtual environment and install requirements
+Create a conda environment
 ```
-$ virtualenv --python=python2.7 venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+$ conda env create -f environment.yml
+$ conda activate cyclenet_env
 ```
 
 ### Training the Cell Cycle and Localization Networks
@@ -112,7 +111,7 @@ Script parameters:
 _This script calls src/**preprocess_images**.py and src/**input_queue_whole_screen**.py_
 
 ### Prerequisites
-Python 2.7 https://www.python.org/downloads
+Anaconda https://www.anaconda.com/download
 
 ### License
 This software is licensed under the [BSD 3-Clause License][BSD3]. Please see the 
