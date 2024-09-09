@@ -109,7 +109,7 @@ def main():
             loc_lower = int(center_y + s)
             if not_on_border(width, height, loc_left, loc_upper, loc_right, loc_lower):
     #             print(ic, center_x, center_y)
-                cells_coords.append([center_x, center_y])
+                cells_coords.append([gfp_in, sepnuc_in, cyto_in, center_x, center_y])
                 cell_cropped = labeled[loc_upper:loc_lower, loc_left:loc_right]
                 cell_cropped_mask = np.where(cell_cropped == label_val, 1, 0)
 
