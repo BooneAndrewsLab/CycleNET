@@ -2,11 +2,11 @@
 Author: Myra Paz Masinas (Andrews and Boone Lab, 2024)
 """
 
-
 from pathlib import Path
 import pandas as pd
 import numpy as np
 import argparse
+import h5py
 
 
 def main():
@@ -22,15 +22,6 @@ def main():
                         help="Output path for the training set (please use absolute path and include the filename)")
     parser.add_argument("-v", "--test-file",
                         help="Output path for the test set (please use absolute path and include the filename)")
-    parser.add_argument("-p", "--index-image-path", type=int, default=0,
-                        help="Index position of the target image path in the *_labeled_coords.npy output file. "
-                             "The file includes the following metadata:\n"
-                             "index 0 = Channel 1 (GFP marker) image path\n"
-                             "index 1 = Channel 2 (Septin/Nuclear marker) image path\n"
-                             "index 2 = Channel 3 (Cytoplasmic marker) image path\n"
-                             "index 3 = center X coordinate of the cell\n"
-                             "index 4 = center Y coordinate of the cell\n"
-                             "The default is set to 0 (GFP marker).")
     parser.add_argument("-x", "--index-x", type=int, default=3,
                         help="Index position of the center X-coordinate of the cell in the segmentation "
                              "*_labeled_coords.npy output file. Please see index details on the -p argument help text. "
@@ -44,7 +35,7 @@ def main():
     parser.add_argument("-l", "--labels-localization", action='store_true',
                         help="Use this flag if the labels are protein localization. Default is False.")
     parser.add_argument("-s", "--crop-size", type=int, default=64,
-                        help="Single cell crop size")
+                        help="Single cell crop size. Default is 64.")
     parser.add_argument("-n", "--channel", type=int, default=5,
                         help="Number of channels/frames saved in the segmentation output *_labeled.npy file. "
                              "Default is 5.")
@@ -58,11 +49,10 @@ def main():
                         help="Ratio to use when splitting the train and test datasets. Default is 0.8")
     args = parser.parse_args()
 
-    labeled_dir = args.labeled_directory
-    input_path = args.input_file
-    output_train = args.train_file
-    output_test = args.test_file
-    ix_loc_impath = args.index_image_path
+    labeled_dir = Path(args.labeled_directory)
+    input_path = Path(args.input_file)
+    output_train = Path(args.train_file)
+    output_test = Path(args.test_file)
     ix_loc_x = args.index_x
     ix_loc_y = args.index_y
     crop_size = args.crop_size
@@ -75,7 +65,7 @@ def main():
     # Set class list
     labels_cellcycle = args.labels_cellcycle
     labels_localization = args.labels_localization
-    if not all([labels_cellcycle, labels_localization]):
+    if not any([labels_cellcycle, labels_localization]):
         raise ValueError("At least one of the following is a required flag to set the class list: "
                          "-c (cell cycle) or -l (localization)")
     if all([labels_cellcycle, labels_localization]):
