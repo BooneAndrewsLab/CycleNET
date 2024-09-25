@@ -172,8 +172,10 @@ def train(inference_function):
     labels = tf.placeholder('float32', shape = [None,numClasses], name='labels')  # for batch norm
     keep_prob = tf.placeholder(tf.float32)
 
-
-    logits = inference_function(input, is_training,keep_prob)
+    if inference_func_2use == "inference_resnet":
+        logits = inference_function(input, is_training)
+    else:
+        logits = inference_function(input, is_training, keep_prob)
     predicted_y = tf.nn.softmax(logits, name='softmax')
 
     # test graph

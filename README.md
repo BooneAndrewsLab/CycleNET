@@ -1,7 +1,13 @@
 # CycleNET
 [![DOI](https://zenodo.org/badge/658895858.svg)](https://zenodo.org/doi/10.5281/zenodo.10998620)
 
+### Prerequisites and Major Dependencies
+* Anaconda
+* Python 3.6
+* Tensorflow 1.6
 
+
+---
 ### Project Setup
 
 Clone the repository
@@ -32,6 +38,8 @@ $ conda env create -f environment.yml
 $ conda activate cyclenet_env
 ```
 
+---
+
 ### Training the Cell Cycle and Localization Networks
 
 #### CELL CYCLE
@@ -57,6 +65,8 @@ Example:
 $ mkdir model_training_localization
 $ python src/training_script_localization.py -i inference_leo -l model_training_localization -t datasets/localization_train_set.hdf5 -v datasets/localization_test_set.hdf5
 ```
+
+---
 
 ### Pipeline: Single Cell Segmentation + Cell Cycle and Localization Prediction
 
@@ -110,8 +120,9 @@ Script parameters:
 ```
 _This script calls src/**preprocess_images**.py and src/**input_queue_whole_screen**.py_
 
+---
 
-### Generating the Training Dataset
+### Generating New Training Dataset
 Users can generate their own train and test HDF5 datasets to train the model from scratch. The process requires steps 
 1 and 2 from the pipeline described above.
 
@@ -195,8 +206,10 @@ Script parameters:
   -r SPLIT_RATIO            Ratio to use when splitting the train and test datasets. Default is 0.8
 ```
 
-### Prerequisites
-Anaconda https://www.anaconda.com/download
+After completing this step, the user can use the generated train and test datasets to train a new model. Kindly see 
+instructions from "Training the Cell Cycle and Localization Networks" section.
+
+---
 
 ### License
 This software is licensed under the [BSD 3-Clause License][BSD3]. Please see the 
