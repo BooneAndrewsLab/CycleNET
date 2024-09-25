@@ -1,0 +1,9 @@
+Early G1
+Late G1
+S/G2
+Metaphase
+Anaphase
+Telophase
+Abberent
+Over_seg
+Anaphase_defect
