@@ -108,7 +108,7 @@ class ScreenQueue:
                 print('enqueue ',well)
                 # check if any cells
                 coord_npy = np.load(os.path.join(self.basePath, well.replace('.npy', '_coords.npy'))) # np.load(self.basePath+'CellCoord/'+well[:-6]+'.npy')
-                print(os.path.join(self.basePath, well.replace('.npy', '_coords.npy')))
+                # print(os.path.join(self.basePath, well.replace('.npy', '_coords.npy')))
                 if len(coord_npy)>0:
                     data_image_cyc, data_image_loc, data_coord, data_intense, well_frame = self.processWell(well)
                     sess.run(self.enqueue_op, feed_dict={self.data_image_cyc: data_image_cyc,
@@ -164,6 +164,7 @@ class ScreenQueue:
         cropped_npy = np.float64(np.load(self.basePath+well))
         #non_cropped_npy = np.float64(np.load(self.basePath+'CellData_non_cropped_fullcell/'+well))
         coord_npy = np.load(os.path.join(self.basePath, well.replace('.npy', '_coords.npy')))
+        coord_npy_corrected = np.array([a[-2:] for a in coord_npy])
         wellNames = [well[:12]]*len(coord_npy)
 
         cycImageData = getSpecificChannels(cropped_npy, [FAR_RED_CHAN, RED_CHAN, RED_CHAN])
@@ -227,5 +228,5 @@ class ScreenQueue:
                                                      means=None, stds=None,
                                                      stretchLow=stretchLow, stretchHigh=stretchHigh)
 
-        return processedBatch_Loc, processedBatch_Cyc, coord_npy, intensityUsed, wellNames
+        return processedBatch_Loc, processedBatch_Cyc, coord_npy_corrected, intensityUsed, wellNames
 
