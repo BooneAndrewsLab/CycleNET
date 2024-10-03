@@ -4,6 +4,7 @@ Edited by: Myra Paz Masinas (Andrews and Boone Lab, July 2023)
 """
 
 from input_queue_whole_screen import ScreenQueue
+from ast import literal_eval
 import tensorflow as tf
 import pandas as pd
 import numpy as np
@@ -17,13 +18,22 @@ parser = argparse.ArgumentParser(description='Evaluate Screens, cell cycle and l
 parser.add_argument("-l", "--LOC_CPKT", help="Path to model/checkpoint for localization network to use")
 parser.add_argument("-c", "--CYC_CPKT", help="Path to model/checkpoint for cell cycle network to use")
 parser.add_argument("-i", "--INPATH", help="Path to input folder containing labeled images")
+parser.add_argument("-a", "--ARRAY", help="Path to protein mapping sheet array. Required columns are: Gene, ORF, and "
+                                          "wellId in order to cross-reference with the data file.")
 parser.add_argument("-o", "--OUTPATH", help="Where to store output csv files")
+parser.add_argument("-m", "--MIN-CELLSIZE", default=0, type=int, help="Minimum threshold for the cell size. "
+                                                                      "The default is 0.")
+parser.add_argument("-n", "--MAX-CELLSIZE", default=3275, type=int, help="Maximum threshold for the cell size. The "
+                                                                         "default is 3275 (~80% of 4096 (64x64 crop).")
 args = parser.parse_args()
 
 locNetCpkt = args.LOC_CPKT
 cycNetCpkt = args.CYC_CPKT
-outputPath = args.OUTPATH
 screens = [args.INPATH]
+array_path = args.ARRAY
+outputPath = args.OUTPATH
+min_cellsize = args.MIN_CELLSIZE
+max_cellsize = args.MAX_CELLSIZE
 
 
 def proccessCropsLoc(processedBatch,predicted_y,inputs,is_training,sess,keep_prob):
@@ -97,8 +107,8 @@ def eval():
     cycleTerms = ['Early G1', 'Late G1', 'S/G2', 'Metaphase', 'Anaphase', 'Telophase',
                  'Abberent', 'Over_seg', 'Anaphase_defect']
 
-    col_names_output = ['x_loc', 'y_loc', 'cellSize','nucSize',
-                       'gfpIntegrated_cell','gfpIntegrated_nuc','gfpIngtegrated_cyt',
+    col_names_output = ['x_loc', 'y_loc', 'cellSize (pixel)','nucSize (pixel)',
+                       'gfpIntegrated_cell','gfpIntegrated_nuc','gfpIntegrated_cyt',
                        'gfpMean_cell','gfpMean_nuc','gfpMean_cyt',
                        'gfpStd_cell','gfpStd_nuc','gfpStd_cyt',
                        'gfpMin_cell','gfpMin_nuc','gfpMin_cyt',
@@ -147,6 +157,7 @@ def eval():
         while sess.run(queue_runner.queue.size()) > dequeueSize:
             processedBatch_Loc, processedBatch_Cyc, coordUsed, intensityUsed, wellNames = sess.run([data_image_loc,data_image_cyc, data_coord,
                                                                             data_intense, well_frame])
+
             if len(wellNames)>0:
                 print(wellNames[-1],'queue_size',sess.run(queue_runner.queue.size()))
             wellNamesAll.append(wellNames)
@@ -188,6 +199,7 @@ def eval():
         allPred = allPred.iloc[:allPred_ind, :]
 
         #add well data
+        print("wellNamesAll", type(wellNamesAll))
         allWellNames = np.hstack(wellNamesAll)
         rows = []
         cols = []
@@ -197,7 +209,7 @@ def eval():
             wellName = well
             rows.append(int(wellName[1:3]))
             cols.append(int(wellName[4:6]))
-            wellIDs.append(wellName[:6])
+            wellIDs.append(wellName[:6].decode("utf-8"))
             frames.append(int(wellName[7:9]))
         allPred['wellPath'] = allWellNames
         allPred['wellId'] = np.hstack(wellIDs)
@@ -205,6 +217,7 @@ def eval():
         allPred['col'] = np.hstack(cols)
         allPred['frame'] = np.hstack(frames)
 
+        print("allPred['wellId']", allPred['wellId'][0])
 
         #add max loc and cyc classes
         maxLocNames = allPred[localizationTerms].idxmax(1)
@@ -212,12 +225,23 @@ def eval():
         allPred['maxLocalization'] = maxLocNames
         allPred['maxCycle'] = maxCycNames
 
+        # filter out small and big cells based on minimum and maximum thresholds
+        allPred = allPred[(allPred['cellSize (pixel)'] > min_cellsize) & (allPred['cellSize (pixel)'] < max_cellsize)]
+
+        # add Gene and ORF columns from the array
+        print("allPred v1", allPred.shape)
+        df_array = pd.read_csv(array_path, usecols=['Gene', 'ORF', 'wellId'])
+        allPred = allPred.merge(df_array, on=['wellId'], how='left')
+
+
+        print("allPred v2", allPred.shape)
+
         locCpktBasename = os.path.basename(locNetCpkt)
         cycCpktBasename = os.path.basename(cycNetCpkt)
         if not os.path.exists(outputPath):
             os.makedirs(outputPath)
         allPred.to_csv(os.path.join(outputPath, '%s_%s_cyc_loc_pred_v1.csv' % (locCpktBasename, cycCpktBasename)),
-                       index=False)
+                       index=False, encoding='utf-8')
 
         queue_runner.stopQueue(threads, coord, sess)
 
