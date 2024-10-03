@@ -28,8 +28,8 @@ class ScreenQueue:
                                    'Mitochondria', 'None', 'Nuclear Periphery', 'Nucleolus', 'Nucleus',
                                    'Peroxisomes', 'Punctate Nuclear', 'Vacuole', 'Vacuole Periphery']
 
-        self.data_intense_names = ['cellSize','nucSize',
-                       'gfpIntegrated_cell','gfpIntegrated_nuc','gfpIngtegrated_cyt',
+        self.data_intense_names = ['cellSize (pixel)','nucSize (pixel)',
+                       'gfpIntegrated_cell','gfpIntegrated_nuc','gfpIntegrated_cyt',
                        'gfpMean_cell','gfpMean_nuc','gfpMean_cyt',
                        'gfpStd_cell','gfpStd_nuc','gfpStd_cyt',
                        'gfpMin_cell','gfpMin_nuc','gfpMin_cyt',
@@ -186,7 +186,7 @@ class ScreenQueue:
         # gfp_chan stats
         gfpIntegrated_cell = greenChanCell.sum(1,keepdims=True).data
         gfpIntegrated_nuc = greenChanNuc.sum(1,keepdims=True).data
-        gfpIngtegrated_cyt = greenChanCyt.sum(1,keepdims=True).data
+        gfpIntegrated_cyt = greenChanCyt.sum(1,keepdims=True).data
         gfpMean_cell = greenChanCell.mean(1,keepdims=True).data
         gfpMean_nuc = greenChanNuc.mean(1,keepdims=True).data
         gfpMean_cyt = greenChanCyt.mean(1,keepdims=True).data
@@ -204,7 +204,7 @@ class ScreenQueue:
         gfpMedian_cyt = np.ma.median(greenChanCyt,1,keepdims=True).data
 
         intensityUsed = np.hstack((cellSize,nucSize,
-                                   gfpIntegrated_cell,gfpIntegrated_nuc,gfpIngtegrated_cyt,
+                                   gfpIntegrated_cell,gfpIntegrated_nuc,gfpIntegrated_cyt,
                                    gfpMean_cell,gfpMean_nuc,gfpMean_cyt,
                                    gfpStd_cell,gfpStd_nuc,gfpStd_cyt,
                                    gfpMin_cell,gfpMin_nuc,gfpMin_cyt,
