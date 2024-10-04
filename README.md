@@ -165,7 +165,7 @@ example/training_dataset/singlecelltool_input_labels_list_localization.txt
 This script generates the train and test HDF5 files needed to train a new CycleNET network.
 Please see example labeled cell files:
 example/training_dataset/labeled_cells_cellcycle.csv
-<br>
+<br/>
 example/training_dataset/labeled_cells_localization.csv
 
 ```
