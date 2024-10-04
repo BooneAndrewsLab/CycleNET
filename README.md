@@ -173,7 +173,7 @@ example/training_dataset/labeled_cells_localization.csv
 
 ```
 Usage:
-$ python src/generate_singlecell_coordinate_sheets.py -d <LABELED_DIRECTORY> 
+$ python src/generate_new_training_data.py -d <LABELED_DIRECTORY> 
   -i <INPUT_FILE> -t <TRAIN_FILE> -v <TEST_FILE> -x <INDEX_X> -y -<INDEX_Y>
   -c <LABELS_CELLCYCLE> -l <LABELS_LOCALIZATION> -s <CROP_SIZE> -n <CHANNEL> -m <METADATA> 
   -w <IMAGE_WIDTH> -z <IMAGE_HEIGHT> -r <SPLIT_RATIO>
@@ -197,7 +197,6 @@ Script parameters:
   -i INPUT_FILE             File that contains the labeled cells. Required columns should be in the order of: Image Path, Center_X, Center_Y, Label. Use exported data from the single cell labeling tool (step 3).
   -t TRAIN_FILE             Output path for the training set (please use absolute path and include the filename)
   -v TEST_FILE              Output path for the test set (please use absolute path and include the filename)
-  -p INDEX_IMAGE_PATH       Index position of the target image path in the *_labeled_coords.npy output file. The default is set to 0.
   -x INDEX_X                Index position of the center X-coordinate of the cell in the segmentation *_labeled_coords.npy output file. The default is set to 3.
   -y INDEX_Y                Index position of the center Y-coordinate of the cell in the segmentation *_labeled_coords.npy output file. The default is set to 4.
   -c LABELS_CELLCYCLE       Use this flag if the labels are cell cycle phases. Default is False.
