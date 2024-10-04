@@ -24,11 +24,17 @@ def main():
                         help="Output path for the test set (please use absolute path and include the filename)")
     parser.add_argument("-x", "--index-x", type=int, default=3,
                         help="Index position of the center X-coordinate of the cell in the segmentation "
-                             "*_labeled_coords.npy output file. Please see index details on the -p argument help text. "
-                             "The default is set to 3.")
+                             "*_labeled_coords.npy output file. The default is set to 3. "
+                             "The file includes the following metadata:\n"
+                             "index 0 = Channel 1 (GFP marker) image path\n"
+                             "index 1 = Channel 2 (Septin/Nuclear marker) image path\n"
+                             "index 2 = Channel 3 (Cytoplasmic marker) image path\n"
+                             "index 3 = center X coordinate of the cell\n"
+                             "index 4 = center Y coordinate of the cell\n"
+                        )
     parser.add_argument("-y", "--index-y", type=int, default=4,
                         help="Index position of the center Y-coordinate of the cell in the segmentation "
-                             "*_labeled_coords.npy output file. Please see index details on the -p argument help text. "
+                             "*_labeled_coords.npy output file. Please see index details on the -x argument help text. "
                              "The default is set to 4.")
     parser.add_argument("-c", "--labels-cellcycle", action='store_true',
                         help="Use this flag if the labels are cell cycle phases. Default is False.")
