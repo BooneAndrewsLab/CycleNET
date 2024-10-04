@@ -158,12 +158,15 @@ Script parameters:
 This is a custom-made GUI single cell labeling tool: https://github.com/BooneAndrewsLab/singlecelltool. 
 Follow the instruction described in the repository page. The output generated from the previous step can be used as the 
 "Cell data file" input in the tool. For the "Phenotype list" input, please use the following files accordingly:
+<br/>
 example/training_dataset/singlecelltool_input_labels_list_cellcycle.txt
+<br/>
 example/training_dataset/singlecelltool_input_labels_list_localization.txt
 
 #### STEP 4 - GENERATE NEW TRAINING DATA
 This script generates the train and test HDF5 files needed to train a new CycleNET network.
 Please see example labeled cell files:
+<br/>
 example/training_dataset/labeled_cells_cellcycle.csv
 <br/>
 example/training_dataset/labeled_cells_localization.csv
